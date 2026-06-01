@@ -1,0 +1,36 @@
+@OnibusExpress_HostAddress = http://localhost:5286
+
+GET {{OnibusExpress_HostAddress}}/rotas
+Accept: application/json
+
+###
+
+GET {{OnibusExpress_HostAddress}}/viagens?origem=Sao Paulo&destino=Rio de Janeiro&data=2026-06-02
+Accept: application/json
+
+###
+
+GET {{OnibusExpress_HostAddress}}/viagens/1
+Accept: application/json
+
+###
+
+POST {{OnibusExpress_HostAddress}}/reservas
+Content-Type: application/json
+
+{
+  "nome": "Maria Silva",
+  "cpf": "529.982.247-25",
+  "email": "maria@email.com",
+  "viagemId": 1,
+  "assentoNumero": 7
+}
+
+###
+
+GET {{OnibusExpress_HostAddress}}/reservas/RSV123456
+Accept: application/json
+
+###
+
+DELETE {{OnibusExpress_HostAddress}}/reservas/RSV123456

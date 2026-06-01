@@ -2,4 +2,8 @@ bin/
 obj/
 .vs/
 .dotnet-appdata/
+<<<<<<< Updated upstream
 .dotnet-home/
+=======
+.dotnet-home/
+>>>>>>> Stashed changes
