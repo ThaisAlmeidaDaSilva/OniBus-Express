@@ -1,5 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using OnibusExpress.Data;
+using OnibusExpress.Application.Services;
+using OnibusExpress.Domain.Contracts;
+using OnibusExpress.Infrastructure;
+using OnibusExpress.Infrastructure.Data;
+using OnibusExpress.Infrastructure.Repositories;
+using OnibusExpress.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +12,13 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<OnibusDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IRotasService, RotasService>();
+builder.Services.AddScoped<IViagensService, ViagensService>();
+builder.Services.AddScoped<IReservasService, ReservasService>();
+builder.Services.AddScoped<IRotaRepository, RotaRepository>();
+builder.Services.AddScoped<IViagemRepository, ViagemRepository>();
+builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
+builder.Services.AddSingleton<IClock, SystemClock>();
 
 var app = builder.Build();
 

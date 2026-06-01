@@ -1,4 +1,7 @@
 <Solution>
   <Project Path="OnibusExpress/OnibusExpress.csproj" />
+  <Project Path="OnibusExpress.Application/OnibusExpress.Application.csproj" />
+  <Project Path="OnibusExpress.Domain/OnibusExpress.Domain.csproj" />
+  <Project Path="OnibusExpress.Infrastructure/OnibusExpress.Infrastructure.csproj" />
   <Project Path="OnibusExpress.Tests/OnibusExpress.Tests.csproj" />
 </Solution>

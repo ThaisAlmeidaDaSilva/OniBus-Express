@@ -1,28 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OnibusExpress.Data;
-using OnibusExpress.Dtos;
+using OnibusExpress.Application.Dtos;
+using OnibusExpress.Application.Services;
 
 namespace OnibusExpress.Controllers;
 
 [ApiController]
 [Route("rotas")]
-public sealed class RotasController(OnibusDbContext dbContext) : ControllerBase
+public sealed class RotasController(IRotasService rotasService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyCollection<RotaDto>>> Listar()
+    public async Task<ActionResult<IReadOnlyCollection<RotaDto>>> Listar(CancellationToken cancellationToken = default)
     {
-        var rotas = await dbContext.Rotas
-            .AsNoTracking()
-            .OrderBy(rota => rota.Origem)
-            .ThenBy(rota => rota.Destino)
-            .Select(rota => new RotaDto(
-                rota.Id,
-                rota.Origem,
-                rota.Destino,
-                rota.DuracaoEstimada.ToString(@"hh\:mm")))
-            .ToListAsync();
-
+        var rotas = await rotasService.ListarAsync(cancellationToken);
         return Ok(rotas);
     }
 }

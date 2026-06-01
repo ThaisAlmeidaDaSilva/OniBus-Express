@@ -17,6 +17,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OnibusExpress\OnibusExpress.csproj" />
+    <ProjectReference Include="..\OnibusExpress.Application\OnibusExpress.Application.csproj" />
+    <ProjectReference Include="..\OnibusExpress.Domain\OnibusExpress.Domain.csproj" />
+    <ProjectReference Include="..\OnibusExpress.Infrastructure\OnibusExpress.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

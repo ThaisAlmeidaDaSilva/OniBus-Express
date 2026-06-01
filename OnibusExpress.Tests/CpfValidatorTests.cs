@@ -1,4 +1,4 @@
-using OnibusExpress.Services;
+using OnibusExpress.Application.Validation;
 
 namespace OnibusExpress.Tests;
 

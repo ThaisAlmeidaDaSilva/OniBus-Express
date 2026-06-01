@@ -1,10 +1,13 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OnibusExpress.Application.Dtos;
+using OnibusExpress.Application.Services;
 using OnibusExpress.Controllers;
-using OnibusExpress.Data;
-using OnibusExpress.Dtos;
-using OnibusExpress.Models;
+using OnibusExpress.Domain.Contracts;
+using OnibusExpress.Domain.Entities;
+using OnibusExpress.Infrastructure.Data;
+using OnibusExpress.Infrastructure.Repositories;
 
 namespace OnibusExpress.Tests;
 
@@ -15,7 +18,7 @@ public sealed partial class ReservasIntegrationTests
     {
         await using var dbContext = CreateDbContext();
         var viagem = await SeedViagemAsync(dbContext, DateTime.Now.AddDays(1));
-        var controller = new ReservasController(dbContext);
+        var controller = CreateController(dbContext);
 
         var primeiraReserva = await controller.Criar(CreateRequest(viagem.Id, assentoNumero: 7));
         var segundaReserva = await controller.Criar(CreateRequest(viagem.Id, assentoNumero: 7));
@@ -31,7 +34,7 @@ public sealed partial class ReservasIntegrationTests
         await using var dbContext = CreateDbContext();
         var viagem = await SeedViagemAsync(dbContext, DateTime.Now.AddHours(3));
         var reserva = await SeedReservaAsync(dbContext, viagem, "ABC-12345");
-        var controller = new ReservasController(dbContext);
+        var controller = CreateController(dbContext);
 
         var result = await controller.Cancelar(reserva.Codigo);
 
@@ -45,7 +48,7 @@ public sealed partial class ReservasIntegrationTests
         await using var dbContext = CreateDbContext();
         var viagem = await SeedViagemAsync(dbContext, DateTime.Now.AddMinutes(90));
         var reserva = await SeedReservaAsync(dbContext, viagem, "ABC-12345");
-        var controller = new ReservasController(dbContext);
+        var controller = CreateController(dbContext);
 
         var result = await controller.Cancelar(reserva.Codigo);
 
@@ -59,7 +62,7 @@ public sealed partial class ReservasIntegrationTests
     {
         await using var dbContext = CreateDbContext();
         var viagem = await SeedViagemAsync(dbContext, DateTime.Now.AddDays(1));
-        var controller = new ReservasController(dbContext);
+        var controller = CreateController(dbContext);
 
         var primeiraReserva = await controller.Criar(CreateRequest(viagem.Id, assentoNumero: 1));
         var segundaReserva = await controller.Criar(CreateRequest(viagem.Id, assentoNumero: 2));
@@ -79,6 +82,16 @@ public sealed partial class ReservasIntegrationTests
             .Options;
 
         return new OnibusDbContext(options);
+    }
+
+    private static ReservasController CreateController(OnibusDbContext dbContext)
+    {
+        var service = new ReservasService(
+            new ViagemRepository(dbContext),
+            new ReservaRepository(dbContext),
+            new TestClock());
+
+        return new ReservasController(service);
     }
 
     private static async Task<Viagem> SeedViagemAsync(OnibusDbContext dbContext, DateTime dataHoraPartida)
@@ -146,4 +159,10 @@ public sealed partial class ReservasIntegrationTests
 
     [GeneratedRegex("^[A-Z]{3}-\\d{5}$")]
     private static partial Regex ReservaCodeRegex();
+
+    private sealed class TestClock : IClock
+    {
+        public DateTime Now => DateTime.Now;
+        public DateTime UtcNow => DateTime.UtcNow;
+    }
 }
